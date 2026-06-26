@@ -35,10 +35,6 @@ WORKDIR /var/www/html
 # Copy semua file project
 COPY . .
 
-# Copy .env.example dan fix DB connection ke mysql
-RUN if [ -f .env.example ]; then cp .env.example .env; fi
-RUN sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/g' .env
-
 # Install dependencies Laravel
 RUN composer install --optimize-autoloader --no-dev
 
