@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install PHP extensions yang dibutuhkan
+# Install PHP extensions dan dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -10,30 +10,36 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
+    libicu-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo_mysql zip opcache
+    && docker-php-ext-install -j$(nproc) \
+        gd \
+        pdo_mysql \
+        zip \
+        opcache \
+        intl
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Disable default MPM modules dan enable hanya satu (mpm_prefork)
+RUN a2dismod mpm_event && \
+    a2enmod mpm_prefork rewrite
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy project files
 COPY . .
 
-# Install dependencies
+# Install composer dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Set permissions
+# Set permissions untuk Laravel
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
+# Configure Apache document root
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+    sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
 EXPOSE 80
 
-# Start Apache
 CMD ["apache2-foreground"]
