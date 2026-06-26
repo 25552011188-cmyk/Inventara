@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install PHP extensions dan dependencies
+# Install PHP extensions
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
         opcache \
         intl
 
-# Disable default MPM modules dan enable hanya satu (mpm_prefork)
+# Fix Apache MPM conflict
 RUN a2dismod mpm_event && \
     a2enmod mpm_prefork rewrite
 
@@ -29,14 +29,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . .
 
-# Install composer dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Set permissions untuk Laravel
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Configure Apache document root
+# Set document root ke folder public Laravel
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
     sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
