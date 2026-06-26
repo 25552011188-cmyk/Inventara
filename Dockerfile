@@ -36,3 +36,4 @@ RUN chmod -R 777 storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 8080
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
