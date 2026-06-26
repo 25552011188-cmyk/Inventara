@@ -35,7 +35,7 @@ WORKDIR /var/www/html
 # Copy semua file project
 COPY . .
 
-# PENTING: Copy .env.example ke .env biar key:generate bisa jalan
+# Copy .env.example ke .env (untuk key:generate)
 RUN if [ -f .env.example ]; then cp .env.example .env; fi
 
 # Install dependencies Laravel
@@ -43,6 +43,9 @@ RUN composer install --optimize-autoloader --no-dev
 
 # Generate APP_KEY
 RUN php artisan key:generate --force
+
+# PENTING: Hapus semua konfigurasi database dari .env agar Laravel pakai Environment Variables Railway
+RUN sed -i '/^DB_/d' .env
 
 # Fix permissions storage
 RUN chmod -R 775 storage bootstrap/cache
