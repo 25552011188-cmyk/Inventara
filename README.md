@@ -1,59 +1,194 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📦 Inventara — Sistem Monitoring & Manajemen Gudang
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Sistem manajemen stok gudang berbasis web dengan alur approval multi-level,
+> dibangun menggunakan **Laravel 12** (API) dan **React.js** (Frontend).
+> Proyek ini dirancang untuk mendemonstrasikan praktik *engineering discipline*:
+> arsitektur yang maintainable, validasi ketat, dan dokumentasi yang jelas.
 
-## About Laravel
+![Status](https://img.shields.io/badge/status-active-success)
+![Laravel](https://img.shields.io/badge/Laravel-12-red?logo=laravel)
+![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC?logo=tailwind-css)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🔐 Multi-Role Authentication
+Sistem login berbasis peran menggunakan **Spatie Permission** dengan 3 level akses:
+- **Admin** → Akses penuh: kelola user, konfigurasi sistem, audit log
+- **Manager** → Approval barang keluar, lihat laporan, monitoring stok
+- **Staff** → Input barang masuk/keluar, cek stok real-time
 
-## Learning Laravel
+### 📊 Dashboard & Visualisasi Stok
+- Grafik interaktif stok masuk vs keluar (harian/mingguan/bulanan)
+- Indikator stok kritis (minimum threshold) dengan notifikasi visual
+- Ringkasan transaksi terbaru dan item paling aktif
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### ✅ Approval Workflow (Barang Keluar)
+Alur persetujuan berjenjang untuk pengeluaran barang:
+1. **Staff** membuat permintaan barang keluar
+2. **Manager** mereview dan approve/reject dengan catatan
+3. Stok hanya berkurang **setelah** disetujui
+4. Riwayat approval tercatat di audit log
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📄 Export Laporan
+- Export data stok & transaksi ke **PDF** dan **Excel** menggunakan Maatwebsite
+- Filter berdasarkan periode, kategori, atau status approval
 
-## Laravel Sponsors
+### 🔍 Audit Trail
+Setiap perubahan kritis (stok, approval, user) tercatat dengan:
+- Siapa yang melakukan
+- Kapan dilakukan (timestamp)
+- Nilai sebelum & sesudah
+- Alasan/keterangan (jika ada)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Tech Stack
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Layer | Teknologi | Keterangan |
+|-------|-----------|------------|
+| **Backend** | Laravel 12 (PHP 8.2+) | RESTful API, Sanctum auth, Spatie Permission |
+| **Frontend** | React 18 + Vite | SPA, komponen reusable, state management |
+| **Styling** | Tailwind CSS 4 | Utility-first, responsive design |
+| **Database** | MySQL | Relational, dengan indexing untuk performa |
+| **Export** | Maatwebsite Excel | PDF & Excel generation |
+| **Dev Tools** | Laravel Debugbar, Vite HMR | Developer experience yang optimal |
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Cara Menjalankan Lokal
 
-## Code of Conduct
+Proyek ini **tidak memerlukan Docker**. Cukup gunakan XAMPP/Laragon atau environment PHP lokal.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Prasyarat
+- PHP 8.2 atau lebih baru
+- Composer
+- Node.js 18+ & npm
+- MySQL (via XAMPP/Laragon/standalone)
 
-## Security Vulnerabilities
+### Langkah Instalasi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+# 1. Clone repository
+git clone https://github.com/25552011188-cmyk/Inventara.git
+cd Inventara
 
-## License
+# 2. Install dependencies backend
+composer install
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 3. Install dependencies frontend
+npm install
+
+# 4. Setup environment
+cp .env.example .env
+php artisan key:generate
+```
+
+### Konfigurasi Database
+
+Buka file `.env` dan sesuaikan:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=inventara
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### Migrasi & Seeder
+
+```bash
+php artisan migrate --seed
+```
+
+> Perintah ini akan membuat tabel dan mengisi data dummy (user, kategori, barang) untuk testing.
+
+### Jalankan Aplikasi
+
+Buka **2 terminal** yang berbeda:
+
+**Terminal 1** — Laravel server:
+```bash
+php artisan serve
+```
+
+**Terminal 2** — Vite (hot reload untuk React):
+```bash
+npm run dev
+```
+
+### Akses Aplikasi
+
+Buka browser: **http://localhost:8000**
+
+### Akun Default (setelah seed)
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@inventara.test | password |
+| Manager | manager@inventara.test | password |
+| Staff | staff@inventara.test | password |
+
+---
+
+## 🧪 Testing
+
+```bash
+composer run test
+```
+
+---
+
+## 📁 Struktur Proyek
+
+```
+inventara/
+├── app/
+│   ├── Http/Controllers/Api/     # API endpoints
+│   ├── Models/                   # Eloquent models
+│   └── Policies/                 # Authorization logic
+├── frontend/
+│   └── src/
+│       ├── components/           # Reusable UI (Button, Modal, Table)
+│       ├── pages/                # Dashboard, Stok, Approval
+│       ├── services/             # API client (Axios)
+│       └── hooks/                # Custom React hooks
+├── database/
+│   ├── migrations/               # Skema database
+│   └── seeders/                  # Data dummy
+├── routes/
+│   ├── api.php                   # API routes
+│   └── web.php                   # Web routes
+└── tests/
+    └── Feature/                  # Feature tests
+```
+
+---
+
+## 🎯 Learning Outcomes
+
+Proyek ini mendemonstrasikan pemahaman tentang:
+- ✅ RESTful API Design
+- ✅ Role-Based Access Control (Spatie Permission)
+- ✅ Workflow State Machine (Approval Flow)
+- ✅ SPA Architecture (React + Laravel API)
+- ✅ Database Design (Normalisasi, Indexing, Audit Trail)
+- ✅ Feature Testing
+
+---
+
+## 📄 Lisensi
+
+Proyek ini berada di bawah lisensi **MIT License**.
+
+---
+
+## 📧 Kontak
+
+Dibangun dengan ❤️ oleh **Fahmi**
+GitHub: [@25552011188-cmyk](https://github.com/25552011188-cmyk)
