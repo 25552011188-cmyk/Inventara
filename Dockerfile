@@ -25,6 +25,11 @@ RUN composer install --optimize-autoloader --no-dev
 
 RUN php artisan key:generate --force
 
+# Tambahin cache commands
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 8080
