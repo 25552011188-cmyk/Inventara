@@ -1,6 +1,6 @@
 FROM php:8.2-cli
 
-# Install system dependencies (DITAMBAHIN libicu-dev)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
         zip \
         intl
 
-# Clean up apt cache biar image lebih kecil
+# Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
@@ -34,6 +34,9 @@ WORKDIR /var/www/html
 
 # Copy semua file project
 COPY . .
+
+# PENTING: Copy .env.example ke .env biar key:generate bisa jalan
+RUN if [ -f .env.example ]; then cp .env.example .env; fi
 
 # Install dependencies Laravel
 RUN composer install --optimize-autoloader --no-dev
