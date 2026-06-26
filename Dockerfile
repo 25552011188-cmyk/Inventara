@@ -1,16 +1,17 @@
 # Kita pake CLI version, bukan Apache, biar gak ada konflik MPM
 FROM php:8.2-cli
 
-# Install dependencies yang dibutuhin Laravel
+# Install dependencies yang dibutuhin Laravel (TAMBAHAN: libzip-dev & zip)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libzip-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
