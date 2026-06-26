@@ -19,23 +19,22 @@ WORKDIR /var/www/html
 
 COPY . .
 
+# Copy .env.example ke .env
 RUN if [ -f .env.example ]; then cp .env.example .env; fi
 
+# PENTING: Override DB_CONNECTION jadi mysql (biar nggak nyoba pake SQLite)
+RUN sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/g' .env
+
+# Install composer dependencies
 RUN composer install --optimize-autoloader --no-dev
 
+# Generate APP_KEY (aman, nggak butuh database)
 RUN php artisan key:generate --force
 
-# Clear semua cache
-RUN php artisan config:clear
-RUN php artisan cache:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
-
-# Fix permissions - ini PENTING!
+# Fix permissions
 RUN chmod -R 777 storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 8080
 
-# Jalankan dengan error reporting penuh
 CMD php artisan serve --host=0.0.0.0 --port=8080
