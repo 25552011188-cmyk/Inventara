@@ -1,39 +1,30 @@
 FROM php:8.2-cli
 
+# Install extensions
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    zip \
-    unzip \
+    git curl libpng-dev libonig-dev libxml2-dev libzip-dev zip unzip \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+# Copy files
 COPY . .
 
-# Copy .env.example ke .env
+# Copy .env.example dan fix DB connection
 RUN if [ -f .env.example ]; then cp .env.example .env; fi
-
-# PENTING: Override DB_CONNECTION jadi mysql (biar nggak nyoba pake SQLite)
 RUN sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/g' .env
 
-# Install composer dependencies
+# Install dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Generate APP_KEY (aman, nggak butuh database)
+# Setup Laravel
 RUN php artisan key:generate --force
-
-# Fix permissions
-RUN chmod -R 777 storage bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 775 storage bootstrap/cache
 
 EXPOSE 8080
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+
+# Start server - PAKAI FORMAT INI
+CMD php artisan serve --host=0.0.0.0 --port=8080
