@@ -130,9 +130,9 @@ Buka browser: **http://localhost:8000**
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@inventara.test | password |
-| Manager | manager@inventara.test | password |
-| Staff | staff@inventara.test | password |
+| Admin | admin@inventara.com | password123 |
+| Manager | manager@inventara.com | password123 |
+| Staff | staff@inventara.com | password123 |
 
 ---
 
