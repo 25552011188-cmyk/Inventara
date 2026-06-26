@@ -1,6 +1,6 @@
 FROM php:8.2-cli
 
-# Install system dependencies
+# Install system dependencies (DITAMBAHIN libicu-dev)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libicu-dev \
     zip \
     unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -21,10 +22,9 @@ RUN apt-get update && apt-get install -y \
         bcmath \
         gd \
         zip \
-        xml \
         intl
 
-# Clean up
+# Clean up apt cache biar image lebih kecil
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
@@ -32,20 +32,23 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy files
+# Copy semua file project
 COPY . .
 
-# Copy .env.example dan fix DB connection
+# Copy .env.example dan fix DB connection ke mysql
 RUN if [ -f .env.example ]; then cp .env.example .env; fi
 RUN sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/g' .env
 
-# Install dependencies
+# Install dependencies Laravel
 RUN composer install --optimize-autoloader --no-dev
 
-# Setup Laravel
+# Generate APP_KEY
 RUN php artisan key:generate --force
+
+# Fix permissions storage
 RUN chmod -R 775 storage bootstrap/cache
 
 EXPOSE 8080
 
+# Jalankan Laravel built-in server
 CMD php artisan serve --host=0.0.0.0 --port=8080
