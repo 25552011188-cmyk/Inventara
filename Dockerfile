@@ -25,13 +25,14 @@ RUN composer install --optimize-autoloader --no-dev
 
 RUN php artisan key:generate --force
 
-# Tambahin cache commands
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+# Setup environment
+RUN php artisan config:clear
+RUN php artisan cache:clear
+RUN php artisan route:clear
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 8080
 
-CMD php artisan serve --host=0.0.0.0 --port=8080
+# Tambahin output biar kita tau aplikasi start
+CMD php artisan serve --host=0.0.0.0 --port=8080 --verbose
